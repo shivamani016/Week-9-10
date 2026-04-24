@@ -13,7 +13,11 @@ config(); //process.env
 //Create express application
 const app = exp();
 //use cors middleware
-app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174"], credentials: true }));
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 //add body parser middleware
 app.use(exp.json());
 //add cookie parser middleware
@@ -32,7 +36,8 @@ const connectDB = async () => {
     console.log("DB connection success");
 
     //start http server
-    app.listen(process.env.PORT, () => console.log(`server started on port ${process.env.PORT}`));
+    const port = process.env.PORT || 4000;
+    app.listen(port, () => console.log(`server started on port ${port}`));
   } catch (err) {
     console.log("Err in DB connection", err);
   }
