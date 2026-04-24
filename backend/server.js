@@ -32,14 +32,18 @@ app.use("/common-api", commonRouter);
 //connect to db
 const connectDB = async () => {
   try {
-    await connect(process.env.DB_URL);
+    await connect(process.env.DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("DB connection success");
 
     //start http server
     const port = process.env.PORT || 4000;
     app.listen(port, () => console.log(`server started on port ${port}`));
   } catch (err) {
-    console.log("Err in DB connection", err);
+    console.error("DB ERROR:", err.message);
+    process.exit(1);
   }
 };
 
